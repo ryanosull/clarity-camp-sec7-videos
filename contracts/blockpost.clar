@@ -12,7 +12,8 @@
 
 ;; constants
 ;;
-(define-constant contract-owner tx-sender) ;;tx-sender == contract deployer
+(define-constant contract-owner (as-contract tx-sender)) ;;tx-sender == contract deployer ;; (define-constant contract-owner tx-sender)
+;; as-contract stores the transfer amount in the contract itself, see table/::get_assets_maps
 
 (define-constant price u1000000) ;; = 1 STX
 
@@ -31,10 +32,10 @@
 ;;
 
 
-(define-public (write-post (message (string-utf8 500)))
+(define-public (write-post (message (string-utf8 500))) ;;utf8 string is always prefixed with u ; u"some string!"
     (begin 
-        ;; (try! (stx-transfer? price tx-sender contract-owner))
-        (unwrap! (stx-transfer? price tx-sender contract-owner) (err "womp womp"))
+        ;; (try! (stx-transfer? price tx-sender contract-owner)) ;;asserts! is looking for a boolean, do not use. 
+        (unwrap! (stx-transfer? price tx-sender contract-owner) (err "womp womp")) 
         ;; #[allow(unchecked_data)]
         (map-set posts tx-sender message)
         (var-set total-posts (+ (var-get total-posts) u1))
