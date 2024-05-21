@@ -12,7 +12,7 @@
 
 ;; constants
 ;;
-(define-constant contract-owner tx-sender) ;;tx-sender == contrat deployer
+(define-constant contract-owner tx-sender) ;;tx-sender == contract deployer
 
 (define-constant price u1000000) ;; = 1 STX
 
@@ -33,7 +33,8 @@
 
 (define-public (write-post (message (string-utf8 500)))
     (begin 
-        (try! (stx-transfer? price tx-sender contract-owner))
+        ;; (try! (stx-transfer? price tx-sender contract-owner))
+        (unwrap! (stx-transfer? price tx-sender contract-owner) (err "womp womp"))
         ;; #[allow(unchecked_data)]
         (map-set posts tx-sender message)
         (var-set total-posts (+ (var-get total-posts) u1))
